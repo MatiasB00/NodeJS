@@ -13,11 +13,14 @@ const options = {
 //Docs en JSON format
 const swaggerSpec = swaggerJSDoc(options);
 
-app.use('api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 
 const app = express();
 const router = express.Router();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(express.json());
 
 const users = [
     {id: 3423, nombre: 'pepito', edad: 25},
@@ -27,7 +30,6 @@ const users = [
     {id: 1142, nombre: 'yo', edad: 43}
 ];
 
-app.use(express.json());
 
 //CREATE
 /**
@@ -177,7 +179,7 @@ router.put('/UPDATE/:id', (req, res) => {
 /**
  * @swagger
  * /CRUD/DELETE/{id}:
- *   put:
+ *   delete:
  *     summary: Elimina un usuario por ID.
  *     description: Elimina un usuario específico según su ID.
  *     parameters:
