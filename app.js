@@ -1,4 +1,20 @@
 const express = require("express");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
+//Información metadata sobre la API
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {title: 'API Crud Básico', version: '1.0.1'},
+    },
+    apis : ['./app.js']
+};
+//Docs en JSON format
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 const app = express();
 const router = express.Router();
@@ -14,6 +30,30 @@ const users = [
 app.use(express.json());
 
 //CREATE
+/**
+ * @swagger
+ * /CRUD/CREATE:
+ *   post:
+ *     summary: Crea un nuevo usuario
+ *     description: Crea un nuevo usuario con la información proporcionada.
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: integer
+ *               nombre:
+ *                 type: string
+ *               edad:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Éxito, se ha creado un nuevo usuario.
+ *       500:
+ *         description: Error al intentar crear un nuevo usuario.
+ */
 router.post('/CREATE', (req, res) => {
     const { id, nombre, edad } = req.body;
 
@@ -28,7 +68,18 @@ router.post('/CREATE', (req, res) => {
 });
 
 //READ
-
+/**
+ * @swagger
+ * /CRUD/READ:
+ *   get:
+ *     summary: Listado de usuarios.
+ *     description: Muestra todos los usuarios cargados en el sistema.
+ *     responses:
+ *       200:
+ *         description: Éxito, se mostraron los usuarios.
+ *       500:
+ *         description: Error al intentar mostrar los usuarios.
+ */
 router.get('/READ', (req, res) => {
     try {
         return res.status(200).json(users);
@@ -36,7 +87,25 @@ router.get('/READ', (req, res) => {
         return res.status(500).json({error:'Hubo un error al intentar mostrar los usuarios.', details:err.message});
     }
 })
-
+/**
+ * @swagger
+ * /CRUD/READ/{id}:
+ *   get:
+ *     summary: Obtiene un usuario por ID
+ *     description: Obtiene la información de un usuario específico según su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario a obtener.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Éxito, devuelve la información del usuario.
+ *       500:
+ *         description: Error al intentar obtener la información del usuario.
+ */
 router.get('/READ/:id', (req, res) => {
     const { id } = req.params;
 
@@ -49,7 +118,41 @@ router.get('/READ/:id', (req, res) => {
 })
 
 //UPDATE
-
+/**
+ * @swagger
+ * /CRUD/UPDATE/{id}:
+ *   put:
+ *     summary: Actualiza la información de un usuario por ID
+ *     description: Actualiza la información de un usuario específico según su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario a actualizar.
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newId:
+ *                 type: integer
+ *                 description: Nuevo ID del usuario.
+ *               nombre:
+ *                 type: string
+ *                 description: Nuevo nombre del usuario.
+ *               edad:
+ *                 type: integer
+ *                 description: Nueva edad del usuario.
+ *     responses:
+ *       200:
+ *         description: Éxito, la información del usuario ha sido actualizada.
+ *       500:
+ *         description: Error al intentar actualizar la información del usuario.
+ */
 router.put('/UPDATE/:id', (req, res) => {
     const { newId, nombre, edad } = req.body;
     const { id } = req.params;
@@ -71,6 +174,25 @@ router.put('/UPDATE/:id', (req, res) => {
 });
 
 //DELETE
+/**
+ * @swagger
+ * /CRUD/DELETE/{id}:
+ *   put:
+ *     summary: Elimina un usuario por ID.
+ *     description: Elimina un usuario específico según su ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del usuario a eliminar.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Éxito, el usuario ha sido eliminado.
+ *       500:
+ *         description: Error al intentar eliminar la información del usuario.
+ */
 router.delete('/DELETE/:id', (req, res) => {
     const { id } = req.params;
 
