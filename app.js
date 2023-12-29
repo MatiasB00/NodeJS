@@ -13,14 +13,11 @@ const options = {
 //Docs en JSON format
 const swaggerSpec = swaggerJSDoc(options);
 
-
-
-
 const app = express();
 const router = express.Router();
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
+
 
 const users = [
     {id: 3423, nombre: 'pepito', edad: 25},
@@ -29,7 +26,6 @@ const users = [
     {id: 1122, nombre: 'messi', edad: 12},
     {id: 1142, nombre: 'yo', edad: 43}
 ];
-
 
 //CREATE
 /**
